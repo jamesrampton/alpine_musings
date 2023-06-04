@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+
+  </head>
+  <body hx-boost="true">
+    <p><a href="/unborked">Goto working version</a></p>
+    <p><strong>This page won't work when loaded via <code>hx-boost</code> because alpine is never inited the second time.</strong></p>
+    <p>If we include the main alpine script in the body, instead of the head, then alpine is inited twice, which breaks the page in different ways.</p>
+    <div x-data="lister">
+      <button @click="items.push({ randomNumber: new Date().getTime()})">Add new stamp</button>
+      <template x-for="(item, index) in items" :key="index">
+        <div>
+          <label :for="'since-' + index">Since</label>
+          <input :id="'since-' + index" type="text" :value="item.randomNumber" placeholder="seconds since the epoch"/>
+          <button @click="items.splice(index, 1)">Remove</button>
+        </div>
+      </template>
+    </div>
+
+    <div x-data="things">
+      <template x-for="(num, index) in list" :key="index">
+        <p x-text="(index + 1) + ' ' + num"></p>
+      </template>
+    </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+          Alpine.data('lister', () => ({
+            items:
+              [
+                {randomNumber: new Date().getTime()},
+                {randomNumber: new Date().getTime()}
+              ]
+          }))
+          Alpine.data('things', () => ({
+            list: ["foo", "bar", "baz"]
+          }))
+        })
+    </script>
+  </body>
+</html>

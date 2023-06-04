@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+  </head>
+  <body hx-boost="true">
+    <p><a href="/">Go broken version</a></p>
+    <p>On this page, we load the data into <code>x-data</code> via attributes, rather than via the <code>alpine:init</code> event. This makes for messier markup, but more predictable behaviour on normal <em>and</em> <code>hx-boost</code>-style page loads.</p>
+    <div x-data="{items: [ {randomNumber: new Date().getTime()}, {randomNumber: new Date().getTime()} ]}">
+      <button @click="items.push({ randomNumber: new Date().getTime()})">Add new stamp</button>
+      <template x-for="(item, index) in items" :key="index">
+        <div>
+          <label :for="'since-' + index">Since</label>
+          <input :id="'since-' + index" type="text" :value="item.randomNumber" placeholder="seconds since the epoch"/>
+          <button @click="items.splice(index, 1)">Remove</button>
+        </div>
+      </template>
+    </div>
+    <div x-data="{list: ['foo', 'bar', 'baz']}">
+      <template x-for="(num, index) in list" :key="index">
+        <p x-text="(index + 1) + ' ' + num"></p>
+      </template>
+    </div>
+
+  </body>
+</html>
